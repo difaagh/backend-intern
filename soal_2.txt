@@ -1,0 +1,11 @@
+> use teduh
+
+> db.createCollection("Psikolog")
+
+> db.Psikolog.insertMany([{_id:1, name:"Rafly Ario Bayu"}, {_id:2, name:"Nur Dhifa Azzahra"}, {_id:3, name:"Irsad Hakim Gunawan"}])
+
+> db.createCollection("Review")
+
+> db.Review.insertMany([{psikolog_id: 1, rating:4, message:"Penjelasannya enak banget"}, {psikolog_id: 2, rating:5, message:"Ngena banget dan bikin pengen konsul lagi deh"}, {psikolog_id: 3, rating:3, message:"Ngejelasin nya kecepetan tapi masuk kok informasinya"}, {psikolog_id:1, rating:5, message:"Informatif dan edukatif"}, {psikolog_id:3, rating:5, message:"Baik banget kaka psikolognyaa"}, {psikolog_id:2, rating:3, message:"Ada pertanyaan aku yg blm kejawab, but so far aku like kok"}])
+
+> db.Psikolog.aggregate([ { $lookup: { from: "Review", localField: "_id", foreignField: "psikolog_id", as: "reviews" } }, { $addFields: { average_rating: { $avg: "$reviews.rating" } } }, { $project: { _id: 1, name: 1, reviews: { _id: 1, psikolog_id: 1, rating: 1, message: 1 }, average_rating: 1 } }, { $project: { _id: { $toString: "$_id" }, name: 1, reviews: 1, average_rating: 1 } }] )
